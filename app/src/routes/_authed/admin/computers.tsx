@@ -3,7 +3,7 @@ import {
   IconBolt,
   IconDeviceDesktop,
 } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import {
@@ -45,6 +45,7 @@ import {
   type ComputerProfile,
   computerFleetQueryOptions,
 } from "@/lib/computers/queries";
+import { queryClient } from "@/query-client";
 
 export const Route = createFileRoute("/_authed/admin/computers")({
   component: ComputersPage,
@@ -63,7 +64,6 @@ function ComputersPage() {
   /** Updating restarts a running computer mid-task, so it is confirmed too. */
   const [confirmingUpdate, setConfirmingUpdate] =
     useState<ComputerProfile | null>(null);
-  const queryClient = useQueryClient();
   const nameFor = useBotNames();
 
   const fleet = useQuery(computerFleetQueryOptions());

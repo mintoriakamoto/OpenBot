@@ -1,13 +1,15 @@
 import { offersStandingRule } from "@openbot/shared/standing-rule";
 import { approvalWords } from "@openbot/shared/tool-name";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
   type ApprovalDecision,
   approvalInboxOptions,
+  approvalKeys,
   decideApproval,
 } from "@/lib/approvals";
+import { queryClient } from "@/query-client";
 
 /**
  * A pending approval, drawn in the conversation where the action it holds would have been.
@@ -23,12 +25,12 @@ export function InlineApproval({
   toolCallId?: string;
   fallback: ReactNode;
 }) {
-  const cache = useQueryClient();
   const inbox = useQuery(approvalInboxOptions());
   const decision = useMutation({
     mutationFn: (choice: ApprovalDecision) =>
       decideApproval(request?.id ?? "", choice),
-    onSuccess: () => cache.invalidateQueries({ queryKey: ["approvals"] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: approvalKeys.all }),
   });
   const request = toolCallId
     ? inbox.data?.requests.find(

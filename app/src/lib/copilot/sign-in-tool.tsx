@@ -1,5 +1,5 @@
 import { IconLock } from "@tabler/icons-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { z } from "zod";
 import { ToolLine } from "@/components/channels/tool-line";
@@ -19,6 +19,7 @@ import {
   passwordKeys,
   pendingSignInRequestsQueryOptions,
 } from "@/lib/passwords/queries";
+import { queryClient } from "@/query-client";
 import { useActiveBotHolder } from "./active-bot";
 import { useFrontendTool } from "./approval-tools";
 import { useComputerToolsOffered } from "./computer-available";
@@ -66,7 +67,6 @@ function parse(result: string | undefined): Outcome {
 export function SignInTool() {
   const bot = useActiveBotHolder();
   // Stable for the provider's life, so the SDK's once-registered handler may keep it.
-  const queryClient = useQueryClient();
   // A sign-in is typed into the Bot's browser; see computerToolsOffered.
   const available = useComputerToolsOffered().browser;
   useFrontendTool({

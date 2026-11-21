@@ -8,7 +8,7 @@ import {
 } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import type { UserPreferences } from "@openbot/shared/user-preferences";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import {
   SELF_HOST_URL,
@@ -17,6 +17,15 @@ import {
 import { authKeys } from "@/lib/auth/queries";
 import { deploymentKeys } from "@/lib/deployment/queries";
 import { userPreferencesQueryOptions } from "@/lib/settings/message-list";
+import { queryClient } from "@/query-client";
+
+beforeEach(() => {
+  queryClient.clear();
+  queryClient.setDefaultOptions({
+    queries: { retry: false, staleTime: Number.POSITIVE_INFINITY },
+    mutations: { retry: false },
+  });
+});
 
 const originalFetch = globalThis.fetch;
 const clients: QueryClient[] = [];
@@ -67,12 +76,7 @@ function setup({
   enabled?: boolean;
   dismissed?: boolean;
 } = {}) {
-  const client = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false, staleTime: Infinity },
-      mutations: { retry: false },
-    },
-  });
+  const client = queryClient;
   clients.push(client);
   client.setQueryData(authKeys.currentUser(), {
     id: "alice",

@@ -1,5 +1,5 @@
 import { IconDots, IconPlus } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
@@ -29,6 +29,7 @@ import { Separator } from "@/components/ui/separator";
 import { currentUserQueryOptions } from "@/lib/auth/queries";
 import { removeSkillMutationOptions } from "@/lib/plugins/mutations";
 import { pluginsPageQueryOptions } from "@/lib/plugins/queries";
+import { queryClient } from "@/query-client";
 
 /**
  * Personal `/` skills. They are instructions, not capabilities, and can only be granted to Bots the
@@ -52,7 +53,6 @@ export const Route = createFileRoute("/_authed/_app/capabilities/skills")({
 });
 
 function SkillsPage() {
-  const queryClient = useQueryClient();
   const { new: isCreating, edit: editingSlug } = Route.useSearch();
   const navigate = Route.useNavigate();
   // Creating wins if both are somehow set: it is the more recent intent, the same rule the agents

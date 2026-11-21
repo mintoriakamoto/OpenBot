@@ -1,7 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { agentListQueryOptions } from "@/lib/agents/queries";
 import { setPluginGrantMutationOptions } from "@/lib/plugins/mutations";
+import { queryClient } from "@/query-client";
 
 /**
  * Which of your Agents carry this skill.
@@ -23,7 +24,6 @@ export function SkillAgents({
   slug: string;
   grantedTo: string[];
 }) {
-  const queryClient = useQueryClient();
   const { data: agents } = useQuery(agentListQueryOptions());
   const mine = (agents ?? []).filter((agent) => agent.mine);
   const held = new Set(grantedTo);

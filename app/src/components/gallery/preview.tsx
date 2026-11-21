@@ -47,9 +47,7 @@ export function GalleryPreview({
   columns?: 1 | 2;
 }) {
   if (!available) {
-    return (
-      <p className="text-muted-foreground text-sm">Loading what it can draw…</p>
-    );
+    return null;
   }
 
   const granted = new Map(

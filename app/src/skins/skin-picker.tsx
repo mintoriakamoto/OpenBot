@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {
   Item,
   ItemActions,
@@ -18,6 +18,7 @@ import {
   saveSkinMutationOptions,
   useUserPreferences,
 } from "@/lib/settings/message-list";
+import { queryClient } from "@/query-client";
 import { SKINS } from "./registry";
 import { useSkinId } from "./store";
 import { SKIN_IDS } from "./types";
@@ -30,7 +31,6 @@ import { SKIN_IDS } from "./types";
 export function SkinPicker() {
   const skin = useSkinId();
   const preferences = useUserPreferences();
-  const queryClient = useQueryClient();
   const save = useMutation(
     saveSkinMutationOptions(queryClient, preferences.userId),
   );

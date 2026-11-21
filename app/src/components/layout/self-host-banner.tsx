@@ -1,5 +1,5 @@
 import { IconX } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { deploymentCapabilitiesQueryOptions } from "@/lib/deployment/queries";
 import {
@@ -7,6 +7,7 @@ import {
   useUserPreferences,
 } from "@/lib/settings/message-list";
 import { cn } from "@/lib/utils";
+import { queryClient } from "@/query-client";
 
 /** `ref` tells CopilotKit the visit came from inside a running OpenBot, not from the README. */
 export const SELF_HOST_URL =
@@ -20,7 +21,6 @@ export const SELF_HOST_URL =
  * preferences have to say they have not closed it.
  */
 export function SelfHostBanner() {
-  const queryClient = useQueryClient();
   const { data: capabilities } = useQuery(deploymentCapabilitiesQueryOptions());
   const { data: preferences, userId } = useUserPreferences();
   const dismiss = useMutation(

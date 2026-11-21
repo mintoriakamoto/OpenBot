@@ -7,7 +7,7 @@ import {
   test,
 } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import {
   createMemoryHistory,
   createRootRoute,
@@ -31,9 +31,15 @@ import {
 } from "@/components/plugins/brokered-account-row";
 import type { BrokerField } from "@/lib/plugins/mutations";
 import type { PluginServer, PluginsPage } from "@/lib/plugins/queries";
+import { queryClient } from "@/query-client";
 import { Route as ConnectedAccountRoute } from "@/routes/_authed/_app/connections.$key";
 import { Route as AdminAppRoute } from "@/routes/_authed/admin/plugins/$key";
 import { BROKERED_PROBE_OUTCOMES } from "../../server/src/plugins/store";
+
+beforeEach(() => {
+  queryClient.clear();
+  queryClient.setDefaultOptions({ queries: { retry: false } });
+});
 
 /**
  * The brokered account row, on both screens that draw it.
@@ -649,9 +655,6 @@ afterEach(() => {
 });
 
 /** A client that settles in one attempt, so no test waits on a retry. */
-function queryClient() {
-  return new QueryClient({ defaultOptions: { queries: { retry: false } } });
-}
 
 /*
  * Capture and restore of each exported `Route` singleton, verbatim from
@@ -806,7 +809,7 @@ test("a disconnect that lands stops reading Connected and offers Connect again",
     confirms: true,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   // Connected first, on the vendor's own answer — otherwise the assertion below proves nothing.
   const disconnect = await view.findByRole("button", { name: "Disconnect" });
@@ -837,7 +840,7 @@ test("a deployment with no Composio key says the app is not available yet and of
     confirms: true,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   expect(await view.findByText("Not set up yet")).toBeTruthy();
   expect(view.queryByText(NAMES_THE_SETTING)).toBeNull();
@@ -855,7 +858,7 @@ test("somebody who abandoned consent reads as not connected, not as an error", a
     confirms: false,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   expect(await view.findByRole("button", { name: "Connect" })).toBeTruthy();
   expect(view.queryByText("Connected")).toBeNull();
@@ -872,7 +875,7 @@ test("the connector's admin page draws the same row, and its disconnect clears t
     confirms: true,
   });
 
-  const view = renderAdminScreen(queryClient());
+  const view = renderAdminScreen(queryClient);
 
   const disconnect = await view.findByRole("button", { name: "Disconnect" });
   expect(view.queryByText("Connected")).toBeTruthy();
@@ -894,7 +897,7 @@ test("the admin page says the key is missing too, rather than offering an action
     confirms: true,
   });
 
-  const view = renderAdminScreen(queryClient());
+  const view = renderAdminScreen(queryClient);
 
   expect(await view.findByText(NAMES_THE_SETTING)).toBeTruthy();
   expect(view.queryByText("Key missing")).toBeTruthy();
@@ -928,7 +931,7 @@ test("a key app asks for what the app asked for, with its own help text", async 
     recorded: false,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   await userEvent.click(await view.findByRole("button", { name: "Connect" }));
 
@@ -949,7 +952,7 @@ test("a key app nobody has connected says it will ask for a key, not send you of
     recorded: false,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   expect(
     await view.findByText(/Gmail connects with a key you already have/),
@@ -971,7 +974,7 @@ test("a key app nobody has connected keeps the screen's own reassurance", async 
     recorded: false,
   });
 
-  const view = renderAdminScreen(queryClient());
+  const view = renderAdminScreen(queryClient);
 
   // The row's own sentence, which is the one the screen's cannot be: pressing Connect here opens a
   // form rather than leaving for a consent screen.
@@ -1012,7 +1015,7 @@ test("a key the broker refuses says so inside the dialog, not only behind it", a
     rejects: REFUSED,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   await userEvent.click(await view.findByRole("button", { name: "Connect" }));
   const dialog = await view.findByRole("dialog");
@@ -1070,7 +1073,7 @@ test("an app that could not be asked what it needs says why, inside the dialog",
     refusesFields: { error: UNASKABLE, status: 502 },
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   await userEvent.click(await view.findByRole("button", { name: "Connect" }));
   const dialog = await view.findByRole("dialog");
@@ -1094,7 +1097,7 @@ test("a consent app's Connect leaves for the vendor's own page", async () => {
   const watched = watchNavigation();
 
   try {
-    const view = renderAccountScreen(queryClient());
+    const view = renderAccountScreen(queryClient);
 
     await userEvent.click(await view.findByRole("button", { name: "Connect" }));
 
@@ -1124,7 +1127,7 @@ test("a typed scheme this screen does not know is refused, not navigated to unde
   const watched = watchNavigation();
 
   try {
-    const view = renderAccountScreen(queryClient());
+    const view = renderAccountScreen(queryClient);
 
     await userEvent.click(await view.findByRole("button", { name: "Connect" }));
 
@@ -1155,7 +1158,7 @@ test("the row names the app rather than calling it the app", async () => {
     recorded: true,
   });
 
-  const view = renderAdminScreen(queryClient());
+  const view = renderAdminScreen(queryClient);
 
   /*
    * The point of every sentence that names the vendor is that it names a place somebody has to go:
@@ -1720,7 +1723,7 @@ test("a key re-checked and then disconnected stops claiming it was checked", asy
     verifiedAt: CHECKED_AT,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   expect(
     await view.findByText(
@@ -1809,7 +1812,7 @@ test("a re-check's verdict is still there after a reload, because the server wro
     recheckAnswer: { verified: false, verifiedAt: null, probe: PROBE },
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   expect(await view.findByText(/hasn't been checked with Gmail/)).toBeTruthy();
 
@@ -1824,7 +1827,7 @@ test("a re-check's verdict is still there after a reload, because the server wro
    * called again — the state this screen reads is the one the press above left behind.
    */
   cleanup();
-  const reloaded = renderAccountScreen(queryClient());
+  const reloaded = renderAccountScreen(queryClient);
 
   expect(
     await reloaded.findByText(/Your key didn't pass a check with/),
@@ -1870,7 +1873,7 @@ test("a re-check the vendor refused stops saying when the key was last checked",
     recheckAnswer: { verified: false, verifiedAt: null, probe: PROBE },
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   expect(
     await view.findByText(
@@ -1921,7 +1924,7 @@ test("a key refused with its account left standing stops offering Connect", asyn
     rejectsAndKeeps: STRANDED,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   await userEvent.click(await view.findByRole("button", { name: "Connect" }));
   const dialog = await view.findByRole("dialog");
@@ -1988,7 +1991,7 @@ for (const [screen, renderScreen] of [
       connectionsFail: true,
     });
 
-    const view = renderScreen(queryClient());
+    const view = renderScreen(queryClient);
 
     expect(await view.findByRole("alert")).toBeTruthy();
     expect(view.getByRole("alert").textContent).toMatch(
@@ -2038,7 +2041,7 @@ test("the administrator's connector screen keeps the rest of the page when the c
     connectionsFail: true,
   });
 
-  const view = renderAdminScreen(queryClient());
+  const view = renderAdminScreen(queryClient);
 
   // The row is still withheld and still says why, which is the fix this one must not undo.
   expect(await view.findByRole("alert")).toBeTruthy();
@@ -2079,7 +2082,7 @@ test("a rejected key still says so on a page that has only read, and still offer
     probe: PROBE,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   expect(
     await view.findByText(/Your key didn't pass a check with/),
@@ -2110,7 +2113,7 @@ test("a rejected key still says so on a page that has only read, and still offer
     probe: PROBE,
   });
 
-  const admin = renderAdminScreen(queryClient());
+  const admin = renderAdminScreen(queryClient);
 
   expect(
     await admin.findByText(/Your key didn't pass a check with/),
@@ -2177,7 +2180,7 @@ test("a key nothing was tried on offers Re-check once the app has something to t
     probe: null,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   expect(await view.findByText(/hasn't been checked with Gmail/)).toBeTruthy();
   expect(await view.findByRole("button", { name: "Re-check" })).toBeTruthy();
@@ -2196,7 +2199,7 @@ test("a key nothing was tried on offers Re-check once the app has something to t
     probe: null,
   });
 
-  const admin = renderAdminScreen(queryClient());
+  const admin = renderAdminScreen(queryClient);
 
   expect(await admin.findByText(/hasn't been checked with Gmail/)).toBeTruthy();
   expect(await admin.findByRole("button", { name: "Re-check" })).toBeTruthy();
@@ -2247,7 +2250,7 @@ test("a form reopened after the app changed its fields draws today's fields, and
     recorded: false,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   await userEvent.click(await view.findByRole("button", { name: "Connect" }));
   const first = await view.findByRole("dialog");
@@ -2318,7 +2321,7 @@ test("a form reopened while the app is being asked again opens on the list it al
     recorded: false,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   /*
    * The first open, which genuinely has nothing to open on: this deployment has never asked this
@@ -2390,7 +2393,7 @@ test("a form reopened against an app that cannot be asked shows the refusal, not
     recorded: false,
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   await userEvent.click(await view.findByRole("button", { name: "Connect" }));
   await within(await view.findByRole("dialog")).findByLabelText("Subdomain");
@@ -2448,7 +2451,7 @@ test("a typed key is gone from the mutation's own state once the request has set
     recorded: false,
   });
 
-  const accepted = queryClient();
+  const accepted = queryClient;
   const view = renderAccountScreen(accepted);
 
   await userEvent.click(await view.findByRole("button", { name: "Connect" }));
@@ -2478,7 +2481,7 @@ test("a typed key is gone from the mutation's own state once the request has set
     rejects: REFUSED,
   });
 
-  const refused = queryClient();
+  const refused = queryClient;
   const second = renderAccountScreen(refused);
 
   await userEvent.click(await second.findByRole("button", { name: "Connect" }));
@@ -2572,7 +2575,7 @@ test("a disconnect drops the re-check's verdict for every reader, not just the r
   });
 
   const view = render(
-    <QueryClientProvider client={queryClient()}>
+    <QueryClientProvider client={queryClient}>
       <AccountProbe />
     </QueryClientProvider>,
   );
@@ -2644,7 +2647,7 @@ test("a re-check that spent nothing leaves the rejection the record still names"
     recheckAnswer: { verified: false, verifiedAt: null, probe: null },
   });
 
-  const view = renderAccountScreen(queryClient());
+  const view = renderAccountScreen(queryClient);
 
   // The accusation, as the record leaves it.
   expect(

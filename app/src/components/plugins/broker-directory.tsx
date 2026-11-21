@@ -19,7 +19,6 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   consentBreadth,
   coverageWarning,
@@ -58,8 +57,6 @@ import { queryClient } from "@/query-client";
  * here branches on which one it is — a `provider === "composio"` test inside a screen is the same
  * mistake wearing a conditional.
  */
-/** Placeholder rows while the directory loads: enough to fill the view, not to suggest a count. */
-const LOADING_ROWS = ["a", "b", "c", "d", "e", "f"];
 
 export function BrokerDirectory({ provider }: { provider: PluginsProvider }) {
   const { name, directoryLabel } = providerVocabulary(provider);
@@ -152,30 +149,10 @@ export function BrokerDirectory({ provider }: { provider: PluginsProvider }) {
         />
 
         {/*
-         * Pending, error, empty, rows. Pending draws placeholder rows: the full directory takes a
-         * couple of seconds to arrive, and a bare search box over blank space read as a page with
-         * nothing on it. They assert nothing, so no sentence claims anything mid-fetch.
+         * Pending, error, empty, rows. Pending renders nothing: the search box stays and the rows arrive
+         * under it.
          */}
-        {apps.isPending ? (
-          <div aria-busy="true" aria-label="Loading apps" role="status">
-            <PageRows>
-              {LOADING_ROWS.map((key, index) => (
-                <React.Fragment key={key}>
-                  {index > 0 ? <Separator /> : null}
-                  <Item size="sm">
-                    <ItemMedia variant="icon">
-                      <Skeleton className="size-full" />
-                    </ItemMedia>
-                    <ItemContent className="gap-1.5">
-                      <Skeleton className="h-3.5 w-32" />
-                      <Skeleton className="h-3 w-64" />
-                    </ItemContent>
-                  </Item>
-                </React.Fragment>
-              ))}
-            </PageRows>
-          </div>
-        ) : apps.error ? (
+        {apps.isPending ? null : apps.error ? (
           <p className="mt-4 text-destructive text-sm" role="alert">
             {/*
              * The server's own sentence, as the enable failure above already does. A keyless

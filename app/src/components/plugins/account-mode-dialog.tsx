@@ -1,5 +1,5 @@
 // app/src/components/plugins/account-mode-dialog.tsx
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,10 +10,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  accountModeKeys,
   accountModePreview,
   setAccountModeMutationOptions,
 } from "@/lib/plugins/mutations";
 import { describeApproval } from "@/lib/plugins/shared-use";
+import { queryClient } from "@/query-client";
 
 /**
  * The one moment an administrator decides between people's own accounts and one shared account.
@@ -37,7 +39,6 @@ export function AccountModeDialog({
   onOpenChange: (open: boolean) => void;
   names?: Record<string, string>;
 }) {
-  const queryClient = useQueryClient();
   /**
    * Kept out of the `["plugins", …]` family on purpose. `invalidatePlugins` — which every plugin
    * write, including the switch below, runs `onSettled` — invalidates by that prefix, and this
@@ -46,7 +47,7 @@ export function AccountModeDialog({
    * dialog sent would read as a second preview rather than the switch that just happened.
    */
   const preview = useQuery({
-    queryKey: ["account-mode", serverId, target],
+    queryKey: accountModeKeys.preview(serverId, target),
     queryFn: () => accountModePreview(serverId, target),
     enabled: open,
   });

@@ -1,8 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { SkillFields } from "@/components/skills/skill-fields";
 import { saveSkillMutationOptions } from "@/lib/plugins/mutations";
 import { emptySkillForm } from "@/lib/skills/form";
+import { queryClient } from "@/query-client";
 
 /**
  * Writing a skill, in the detail panel beside the list.
@@ -11,7 +12,6 @@ import { emptySkillForm } from "@/lib/skills/form";
  * write the next one — the usual reason to open this is to make a variant of one that exists.
  */
 export function NewSkill() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const createSkill = useMutation(saveSkillMutationOptions(queryClient));

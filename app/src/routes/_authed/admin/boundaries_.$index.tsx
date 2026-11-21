@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { DryRunChanges } from "@/components/boundaries/dry-run-changes";
@@ -21,8 +21,10 @@ import { saveActionPolicyMutationOptions } from "@/lib/computers/mutations";
 import {
   type ActionPolicy,
   actionPolicyQueryOptions,
+  computerKeys,
   dryRunActionPolicy,
 } from "@/lib/computers/queries";
+import { queryClient } from "@/query-client";
 
 export const Route = createFileRoute("/_authed/admin/boundaries_/$index")({
   component: RulePage,
@@ -70,7 +72,6 @@ function RulePage() {
 
 function RuleDetail({ policy, rule }: { policy: ActionPolicy; rule: string }) {
   const navigate = Route.useNavigate();
-  const queryClient = useQueryClient();
   const savePolicy = useMutation(saveActionPolicyMutationOptions(queryClient));
   const [removing, setRemoving] = useState(false);
   const label = ruleLabel(policy, rule);
@@ -80,7 +81,7 @@ function RuleDetail({ policy, rule }: { policy: ActionPolicy; rule: string }) {
    * over recent actions, would have allowed exactly the ones it stopped.
    */
   const reach = useQuery({
-    queryKey: ["computers", "policy", "reach", rule],
+    queryKey: computerKeys.policyReach(rule),
     queryFn: () => dryRunActionPolicy(withoutRule(policy, rule)),
   });
 

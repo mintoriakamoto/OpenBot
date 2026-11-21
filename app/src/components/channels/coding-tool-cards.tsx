@@ -11,8 +11,8 @@ import {
 } from "@tabler/icons-react";
 import { structuredPatch } from "diff";
 import { type ReactNode, useState } from "react";
-import { byPosition } from "@/components/gallery/positions";
 import { Badge, GalleryFrame } from "@/components/gallery/frame";
+import { byPosition } from "@/components/gallery/positions";
 import { Button } from "@/components/ui/button";
 import type { Look } from "@/lib/copilot/coding-calls";
 import { asText } from "@/lib/plugins/tool-result";

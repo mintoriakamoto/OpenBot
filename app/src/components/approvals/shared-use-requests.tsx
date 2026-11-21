@@ -1,5 +1,5 @@
 import { IconShare } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Fragment } from "react";
 import { PageRows, PageSection } from "@/components/layout/page-shell";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import {
   type SharedUseRequestReason,
   sharedUseRequestsQueryOptions,
 } from "@/lib/plugins/shared-use";
+import { queryClient } from "@/query-client";
 
 const WHY: Record<SharedUseRequestReason, string> = {
   refused_call:
@@ -34,7 +35,6 @@ const WHY: Record<SharedUseRequestReason, string> = {
  * for anyone else, or when nothing is waiting.
  */
 export function SharedUseRequests() {
-  const queryClient = useQueryClient();
   const me = useQuery(currentUserQueryOptions()).data;
   const isAdmin = me?.role === "admin";
   const requests = useQuery(sharedUseRequestsQueryOptions(isAdmin));

@@ -1,6 +1,13 @@
-import { afterAll, afterEach, beforeAll, expect, test } from "bun:test";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  expect,
+  test,
+} from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
@@ -8,7 +15,13 @@ import {
   ProfileNameForm,
 } from "@/components/settings/profile";
 import { authKeys } from "@/lib/auth/queries";
+import { queryClient } from "@/query-client";
 import { settleReactWork } from "./settle-react-work";
+
+beforeEach(() => {
+  queryClient.clear();
+  queryClient.setDefaultOptions({ queries: { retry: false } });
+});
 
 beforeAll(() => GlobalRegistrator.register());
 const originalFetch = globalThis.fetch;
@@ -22,9 +35,7 @@ afterAll(async () => {
 });
 
 function client(needsName = true) {
-  const query = new QueryClient({
-    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
-  });
+  const query = queryClient;
   query.setQueryData(authKeys.currentUser(), {
     id: "existing-user",
     email: "dev@openbot.local",

@@ -1,6 +1,13 @@
-import { afterAll, afterEach, beforeAll, expect, test } from "bun:test";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  expect,
+  test,
+} from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import {
   createMemoryHistory,
   createRootRoute,
@@ -13,7 +20,13 @@ import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { ConnectAppCard } from "@/components/channels/connect-app-card";
 import { carryOnMessage } from "@/lib/copilot/carry-on";
 import { ConversationProvider } from "@/lib/copilot/conversation";
+import { queryClient } from "@/query-client";
 import { settleReactWork } from "./settle-react-work";
+
+beforeEach(() => {
+  queryClient.clear();
+  queryClient.setDefaultOptions({ queries: { retry: false } });
+});
 
 /**
  * The card a Bot's refusal turns into when the app it needed is one this person can connect.
@@ -123,9 +136,7 @@ function mounted(
     return json({});
   }) as unknown as typeof fetch;
 
-  const client = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
+  const client = queryClient;
   // One card, one tool call, however often the route draws it.
   const toolCallId = `call_${Math.random().toString(36).slice(2)}`;
   const root = createRootRoute({ component: Outlet });

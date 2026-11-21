@@ -49,7 +49,7 @@ test("restoring hides rows the snapshot already delivered", () => {
 
   expect(view.queryByText("hello")).toBeNull();
   expect(view.container.querySelectorAll("[data-message-id]").length).toBe(0);
-  expect(view.getByLabelText(PLACEHOLDER)).toBeTruthy();
+  expect(view.queryByLabelText(PLACEHOLDER)).toBeNull();
 });
 
 test("rows appear together when restoring ends", () => {
@@ -144,7 +144,7 @@ test("switching channels does not animate the new history", () => {
   expect(rows.filter(startsHidden).length).toBe(0);
 });
 
-test("a message typed while history loads is shown under the placeholder", () => {
+test("a message typed while history loads is shown while restoring", () => {
   const view = render(
     <ChatTranscript
       messages={[]}
@@ -155,7 +155,7 @@ test("a message typed while history loads is shown under the placeholder", () =>
     />,
   );
 
-  expect(view.getByLabelText(PLACEHOLDER)).toBeTruthy();
+  expect(view.queryByLabelText(PLACEHOLDER)).toBeNull();
   expect(view.getByText("typed early")).toBeTruthy();
 });
 

@@ -5,7 +5,7 @@ import {
   IconSearch,
   IconTool,
 } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import * as React from "react";
 import { useState } from "react";
@@ -55,6 +55,7 @@ import {
   type SharedUseApproval,
   sharedUseKeys,
 } from "@/lib/plugins/shared-use";
+import { queryClient } from "@/query-client";
 
 /**
  * One Bot and one app: every action the app offers, and which of them this Bot holds.
@@ -99,7 +100,6 @@ function RouteComponent() {
   const { key, agentId } = useParams({
     from: "/_authed/admin/plugins/$key_/bots/$agentId",
   });
-  const queryClient = useQueryClient();
   const plugins = useQuery(pluginsPageQueryOptions());
   const agents = useQuery(agentListQueryOptions());
   /*

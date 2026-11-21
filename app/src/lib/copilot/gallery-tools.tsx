@@ -1,10 +1,10 @@
 import { useCopilotKit, useFrontendTool } from "@copilotkit/react-core/v2";
 import { NOT_SHOWN, NOT_SHOWN_TAIL } from "@openbot/shared/component-markers";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   useCallback,
-  useEffect,
   useContext,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -30,27 +30,27 @@ import {
   galleryManifest,
 } from "@/lib/copilot/gallery-registry";
 import {
-  cardState,
   COULDNT_CHECK,
+  cardState,
   createGrantStore,
   type GrantStore,
   grantsFrom,
 } from "@/lib/copilot/grant-store";
 import { settledArgs } from "@/lib/copilot/settled-args";
+import { queryClient } from "@/query-client";
 
 /**
  * Register compiled gallery components once per name, scoped to the active Bot with `available`.
  * Handlers still recheck grants at call time because a run's offered tool list is only a snapshot.
  */
 export function GalleryTools() {
-  const queryClient = useQueryClient();
   useEffect(() => {
     void announceGallery(galleryManifest()).then((added) => {
       if (added.length > 0) {
         void queryClient.invalidateQueries({ queryKey: componentKeys.all });
       }
     });
-  }, [queryClient]);
+  }, []);
 
   // Active Bot comes from the route/channel surface currently driving the provider.
   const grantsFor = useActiveBotId();

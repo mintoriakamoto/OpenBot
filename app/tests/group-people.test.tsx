@@ -1,10 +1,23 @@
-import { afterAll, afterEach, beforeAll, expect, test } from "bun:test";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  expect,
+  test,
+} from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { GroupPeopleButton } from "@/components/channels/group-people";
+import { queryClient } from "@/query-client";
 import { settleReactWork } from "./settle-react-work";
+
+beforeEach(() => {
+  queryClient.clear();
+  queryClient.setDefaultOptions({ queries: { retry: false } });
+});
 
 /**
  * Who is in a group, from a button in its top bar: the people in it, taking someone out or leaving,
@@ -56,9 +69,7 @@ function serving(initial: Record<string, unknown>[]) {
 }
 
 function draw() {
-  const client = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
+  const client = queryClient;
   return render(
     <QueryClientProvider client={client}>
       <GroupPeopleButton channelId="group-1" />

@@ -72,9 +72,13 @@ export type ApprovalInboxData = {
     createdAt: string;
   }[];
 };
+export const approvalKeys = {
+  all: ["approvals"] as const,
+};
+
 export const approvalInboxOptions = () =>
   queryOptions({
-    queryKey: ["approvals"],
+    queryKey: approvalKeys.all,
     queryFn: async (): Promise<ApprovalInboxData> => {
       const response = await client("/api/approvals", {
         fallback: "Your approvals could not be loaded.",

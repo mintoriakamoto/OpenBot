@@ -1,8 +1,4 @@
-import {
-  MutationObserver,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { MutationObserver, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { stashFirstMessage } from "@/components/channels/transcript-messages";
 import {
@@ -10,6 +6,7 @@ import {
   sendGroupMessageMutationOptions,
 } from "@/lib/groups";
 import { newId } from "@/lib/new-id";
+import { queryClient } from "@/query-client";
 import {
   createChannelMutationOptions,
   deleteChannelMutationOptions,
@@ -76,7 +73,6 @@ export async function startGroupWith(input: {
  * keeps the first message visible while the channel thread joins.
  */
 export function useStartChannel() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const createChannel = useMutation(createChannelMutationOptions(queryClient));
   const createGroup = useMutation(createGroupMutationOptions(queryClient));

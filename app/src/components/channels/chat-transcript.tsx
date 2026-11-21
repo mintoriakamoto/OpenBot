@@ -9,6 +9,7 @@ import {
   readConnectPrompt,
   SHOW_APP_ACCESS_TOOL,
 } from "@openbot/shared/connect-prompt";
+import { readToolName } from "@openbot/shared/tool-name";
 import {
   IconAlertTriangle,
   IconBox,
@@ -56,17 +57,16 @@ import {
   MessageScrollerProvider,
   MessageScrollerViewport,
 } from "@/components/ui/message-scroller";
-import { Skeleton } from "@/components/ui/skeleton";
 import { attachmentUrl } from "@/lib/channels/attachments";
 import { readResponsibilityTurn } from "@/lib/channels/responsibility-turn";
 import { readFiring } from "@/lib/channels/routine-firing";
+import { tryClient } from "@/lib/client";
 import type { CardPlace } from "@/lib/copilot/carry-on";
 import { foreignCodingCall } from "@/lib/copilot/coding-calls";
 import { ToolPlaceContext } from "@/lib/copilot/tool-place";
 import { deploymentCapabilitiesQueryOptions } from "@/lib/deployment/queries";
 import { markdownComponents, markdownPlugins } from "@/lib/markdown";
 import { EASE_OUT, ENTRANCE_SECONDS } from "@/lib/motion";
-import { readToolName } from "@openbot/shared/tool-name";
 import {
   asText,
   forDisplay,
@@ -170,40 +170,6 @@ function splitSkillChip(
     return null;
   }
   return { chip: match[1], rest: text.slice(match[0].length) };
-}
-
-/**
- * The shape of a conversation, while it is still being fetched. Shaped like what is coming rather
- * than like a loading widget, on the same line pitch so the column does not jump when words land.
- */
-const RESTORING_ANSWER_LINES = [
-  { id: "line-1", width: "w-full" },
-  { id: "line-2", width: "w-11/12" },
-  { id: "line-3", width: "w-full" },
-  { id: "line-4", width: "w-10/12" },
-  { id: "line-5", width: "w-11/12" },
-  { id: "line-6", width: "w-full" },
-  { id: "line-7", width: "w-11/12" },
-  { id: "line-8", width: "w-2/3" },
-] as const;
-
-function RestoringTranscript() {
-  return (
-    // One announcement, with every bar hidden from it: nine empty shapes read aloud is worse.
-    <div aria-label="Loading this conversation" role="status">
-      <div aria-hidden="true" className="flex justify-end pb-7">
-        <Skeleton className="h-10 w-64 rounded-xl bg-muted/40 motion-reduce:animate-none" />
-      </div>
-      <div aria-hidden="true" className="flex flex-col gap-3">
-        {RESTORING_ANSWER_LINES.map((line) => (
-          <Skeleton
-            className={`h-4 bg-muted/40 motion-reduce:animate-none ${line.width}`}
-            key={line.id}
-          />
-        ))}
-      </div>
-    </div>
-  );
 }
 
 /**
@@ -997,7 +963,7 @@ function probeDocument(url: string): Promise<boolean> {
   const existing = probesInFlight.get(url);
   if (existing) return existing;
 
-  const probe = fetch(url, { method: "HEAD", credentials: "include" })
+  const probe = tryClient(url, { method: "HEAD" })
     .then((response) => response.status === 404)
     .finally(() => {
       // Cleared however it settled, so the next mount asks again rather than inheriting an answer
@@ -2139,7 +2105,6 @@ export function ChatTranscript({
           className={cn("flex flex-col gap-6 py-6", column)}
           data-transcript-column
         >
-          <RestoringTranscript />
           {/*
            * A message typed while history loads is parked, not lost, and must be seen to be: a
            * composer that cleared with nothing appearing reads as a message that vanished, and the

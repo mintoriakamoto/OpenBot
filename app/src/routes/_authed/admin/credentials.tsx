@@ -1,5 +1,5 @@
 import { IconKey, IconPlus } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   PageEmpty,
@@ -19,13 +19,13 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { revokeCredentialMutationOptions } from "@/lib/credentials/mutations";
 import { credentialListQueryOptions } from "@/lib/credentials/queries";
+import { queryClient } from "@/query-client";
 
 export const Route = createFileRoute("/_authed/admin/credentials")({
   component: CredentialsPage,
 });
 
 function CredentialsPage() {
-  const queryClient = useQueryClient();
   const credentials = useQuery(credentialListQueryOptions());
   const revokeCredential = useMutation(
     revokeCredentialMutationOptions(queryClient),

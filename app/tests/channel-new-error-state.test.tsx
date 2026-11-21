@@ -8,7 +8,7 @@ import {
   test,
 } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import {
   createMemoryHistory,
   createRootRoute,
@@ -22,12 +22,20 @@ import userEvent from "@testing-library/user-event";
 import * as NewBotSheetModule from "@/components/agents/new-bot-sheet";
 import * as SidebarToggleModule from "@/components/layout/sidebar-toggle";
 import { type AgentProfile, agentKeys } from "@/lib/agents/queries";
+import { queryClient } from "@/query-client";
 import { Route as ChannelNewRoute } from "@/routes/_authed/_app/channel/new";
 import {
   NewBotCreationStub,
   SidebarToggleStub,
 } from "./channel-new-error-state.fixture";
 import { settleReactWork } from "./settle-react-work";
+
+beforeEach(() => {
+  queryClient.clear();
+  queryClient.setDefaultOptions({
+    queries: { retry: false, staleTime: Number.POSITIVE_INFINITY },
+  });
+});
 
 beforeAll(() => GlobalRegistrator.register());
 
@@ -93,22 +101,12 @@ function agent(
 }
 
 function queryClientWithAgents(agents: AgentProfile[]) {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        staleTime: Number.POSITIVE_INFINITY,
-      },
-    },
-  });
   queryClient.setQueryData(agentKeys.list(false), agents);
   return queryClient;
 }
 
 function queryClientWithFailingAgents() {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
+  queryClient.setDefaultOptions({ queries: { retry: false } });
   queryClient.setQueryData(agentKeys.list(false), undefined);
   queryClient.setQueryDefaults(agentKeys.list(false), {
     queryFn: async () => {

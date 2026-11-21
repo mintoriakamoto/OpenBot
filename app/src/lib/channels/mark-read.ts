@@ -1,10 +1,7 @@
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { hasUnseenActivity } from "@/components/app-sidebar/app-sidebar";
+import { queryClient } from "@/query-client";
 import { markChannelReadMutationOptions } from "./mutations";
 import { channelListQueryOptions } from "./queries";
 
@@ -18,7 +15,6 @@ import { channelListQueryOptions } from "./queries";
  * would re-fire on its own write — and with lastMessageAt ahead of this browser's clock, loop.
  */
 export function useMarkOpenChannelRead(channelId: string) {
-  const queryClient = useQueryClient();
   const markRead = useMutation(markChannelReadMutationOptions(queryClient));
   const roster = useInfiniteQuery(channelListQueryOptions());
   const summary = roster.data?.find((row) => row.id === channelId);

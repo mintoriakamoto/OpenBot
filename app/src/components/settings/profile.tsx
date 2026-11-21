@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useId, useState } from "react";
 import AgentOrb from "@/components/agents/orb/agent-orb";
 import { PageSection } from "@/components/layout/page-shell";
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authKeys, currentUserQueryOptions } from "@/lib/auth/queries";
 import { client } from "@/lib/client";
+import { queryClient } from "@/query-client";
 
 export function ProfileNameForm({
   initialName = "",
@@ -17,7 +18,6 @@ export function ProfileNameForm({
   onSaved?: () => void | Promise<void>;
 }) {
   const id = useId();
-  const queryClient = useQueryClient();
   const [draft, setDraft] = useState<string | null>(null);
   const name = draft ?? initialName;
   const save = useMutation({

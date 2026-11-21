@@ -72,6 +72,8 @@ export const computerKeys = {
   all: ["computers"] as const,
   fleet: () => ["computers", "fleet"] as const,
   policy: () => ["computers", "policy"] as const,
+  policyReach: (rule: unknown) =>
+    ["computers", "policy", "reach", rule] as const,
   status: (botId: string) => ["computers", "status", botId] as const,
 };
 

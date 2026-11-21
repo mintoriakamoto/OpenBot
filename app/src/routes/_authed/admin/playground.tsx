@@ -1,5 +1,5 @@
 import { OpenGenerativeUIActivityRenderer } from "@copilotkit/react-core/v2";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useId, useState } from "react";
 import { SidebarToggle } from "@/components/layout/sidebar-toggle";
@@ -25,6 +25,7 @@ import {
   type SandboxedRecord,
   sandboxedListQueryOptions,
 } from "@/lib/sandboxed/queries";
+import { queryClient } from "@/query-client";
 
 /**
  * Browser-authored components are edited as drafts, previewed in the production sandbox renderer,
@@ -117,7 +118,6 @@ export function validatePlaygroundDraft(draft: Draft): PlaygroundValidation {
 
 function PlaygroundPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
-  const queryClient = useQueryClient();
   const { data: components } = useQuery(sandboxedListQueryOptions());
   const [draft, setDraft] = useState<Draft>(STARTER);
   const [error, setError] = useState<string | null>(null);

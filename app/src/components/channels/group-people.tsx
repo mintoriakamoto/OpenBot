@@ -1,5 +1,5 @@
 import { IconUser, IconUsers } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Fragment, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +26,7 @@ import {
   groupQueryOptions,
   removeGroupMemberMutationOptions,
 } from "@/lib/groups";
+import { queryClient } from "@/query-client";
 
 /**
  * Who is in a group, from its top bar: how many people, and a dialog listing them where the creator
@@ -33,7 +34,6 @@ import {
  * here. Everyone added sees the whole conversation.
  */
 export function GroupPeopleButton({ channelId }: { channelId: string }) {
-  const queryClient = useQueryClient();
   const group = useQuery(groupQueryOptions(channelId));
   const me = useQuery(currentUserQueryOptions()).data;
   const add = useMutation(

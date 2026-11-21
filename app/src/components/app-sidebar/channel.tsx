@@ -1,5 +1,5 @@
 import { IconPin, IconPinnedOff, IconTrash } from "@tabler/icons-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { memo, useState } from "react";
 import { DeleteConversationDialog } from "@/components/channels/delete-conversation-dialog";
@@ -12,6 +12,7 @@ import {
 import { setChannelPinnedMutationOptions } from "@/lib/channels/mutations";
 import type { MessageListEmphasis } from "@/lib/settings/message-list";
 import { useTypedReveal } from "@/lib/typed-reveal";
+import { queryClient } from "@/query-client";
 import { ChannelItemContent } from "./channel-item-content";
 
 /**
@@ -46,7 +47,6 @@ export const Channel = memo(function Channel({
   busy: boolean;
   emphasis: MessageListEmphasis;
 }) {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   // Whether this row's channel is the one on screen, as a boolean, so navigating between
   // channels re-renders the two rows whose answer changed rather than the whole roster.

@@ -1,5 +1,5 @@
 import { IconArrowUpRight } from "@tabler/icons-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { ConnectionFields } from "@/components/plugins/connection-fields";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,7 @@ import {
   brokeredKeyMissing,
   type PluginsProvider,
 } from "@/lib/plugins/provider-vocabulary";
+import { queryClient } from "@/query-client";
 
 /**
  * One person's own brokered account, on whichever screen is asking.
@@ -299,7 +300,6 @@ export function useBrokeredAccount(input: {
    */
   report: (message: string | null) => void;
 }): BrokeredAccount {
-  const queryClient = useQueryClient();
   const {
     authScheme,
     brokered,

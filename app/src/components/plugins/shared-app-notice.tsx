@@ -1,10 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { currentUserQueryOptions } from "@/lib/auth/queries";
 import {
   botSharedAppsQueryOptions,
   requestSharedUseMutationOptions,
 } from "@/lib/plugins/shared-use";
+import { queryClient } from "@/query-client";
 
 /**
  * What changing who can reach a Bot means for the shared accounts it uses, said BEFORE the change.
@@ -21,7 +22,6 @@ export function SharedAppNotice({
   botId: string;
   reason: "publish" | "trigger";
 }) {
-  const queryClient = useQueryClient();
   const me = useQuery(currentUserQueryOptions()).data;
   const shared = useQuery(botSharedAppsQueryOptions(botId));
   const ask = useMutation(requestSharedUseMutationOptions(queryClient));

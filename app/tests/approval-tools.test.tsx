@@ -1,11 +1,25 @@
-import { afterAll, afterEach, beforeAll, expect, spyOn, test } from "bun:test";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  expect,
+  spyOn,
+  test,
+} from "bun:test";
 import * as ReactCoreV2 from "@copilotkit/react-core/v2";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, render } from "@testing-library/react";
 import { failedComputerCall } from "@/lib/computers/call";
 import { observeApprovalAgent } from "@/lib/copilot/approval-context";
 import { useFrontendTool } from "@/lib/copilot/approval-tools";
+import { queryClient } from "@/query-client";
+
+beforeEach(() => {
+  queryClient.clear();
+  queryClient.setDefaultOptions({ queries: { retry: false } });
+});
 
 /**
  * The handler the SDK keeps for a computer change.
@@ -82,7 +96,7 @@ test("a change goes to the server's gate even when nothing about approvals has l
     { preconnect: originalFetch.preconnect },
   );
   try {
-    const queries = new QueryClient();
+    const queries = queryClient;
     const invalidated: unknown[] = [];
     const invalidate = queries.invalidateQueries.bind(queries);
     queries.invalidateQueries = ((filters?: unknown) => {
@@ -177,7 +191,7 @@ async function clickAgainstGate(
   });
   try {
     render(
-      <QueryClientProvider client={new QueryClient()}>
+      <QueryClientProvider client={queryClient}>
         <Tools />
       </QueryClientProvider>,
     );
@@ -305,7 +319,7 @@ function LookTools() {
  * One client for every look: the SDK keeps the handler from the first render, and the client with
  * it, as the app's one client is kept.
  */
-const lookQueries = new QueryClient();
+const lookQueries = queryClient;
 async function navigateWith(
   answer: (path: string) => Promise<Response>,
   { observed = true }: { observed?: boolean } = {},

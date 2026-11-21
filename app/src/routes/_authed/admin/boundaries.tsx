@@ -4,7 +4,7 @@ import {
   IconPlus,
   IconShieldX,
 } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   PageEmpty,
@@ -27,6 +27,7 @@ import { Switch } from "@/components/ui/switch";
 import { ruleLabel } from "@/lib/boundaries/rules";
 import { saveActionPolicyMutationOptions } from "@/lib/computers/mutations";
 import { actionPolicyQueryOptions } from "@/lib/computers/queries";
+import { queryClient } from "@/query-client";
 
 export const Route = createFileRoute("/_authed/admin/boundaries")({
   component: BoundariesPage,
@@ -44,7 +45,6 @@ const DESCRIPTION =
  * (`boundaries_.new.tsx`) and a rule opens to what it has stopped (`boundaries_.$index.tsx`).
  */
 function BoundariesPage() {
-  const queryClient = useQueryClient();
   const stored = useQuery(actionPolicyQueryOptions());
   const savePolicy = useMutation(saveActionPolicyMutationOptions(queryClient));
   /* What the server stored wins once a save lands: it normalises what it keeps. */

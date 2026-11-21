@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useLayoutEffect, useRef } from "react";
 import { Streamdown } from "streamdown";
@@ -16,6 +16,7 @@ import {
 } from "@/lib/groups";
 import { markdownComponents, markdownPlugins } from "@/lib/markdown";
 import { newId } from "@/lib/new-id";
+import { queryClient } from "@/query-client";
 import { ChannelAvatar } from "./avatar";
 import { Composer, toAgentOptions } from "./composer";
 import { TeamBotConsentCard } from "./team-bot-consent";
@@ -29,7 +30,6 @@ import { TeamBotConsentCard } from "./team-bot-consent";
  * `@Name` in the composer addresses one Bot; otherwise every Bot answers, one after another.
  */
 export function GroupChat({ channelId }: { channelId: string }) {
-  const queryClient = useQueryClient();
   const group = useQuery(groupQueryOptions(channelId));
   const me = useQuery(currentUserQueryOptions()).data;
   const send = useMutation(
