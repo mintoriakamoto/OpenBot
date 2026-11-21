@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { deleteChannelMutationOptions } from "@/lib/channels/mutations";
+import { queryClient } from "@/query-client";
 
 /**
  * Confirms deleting a conversation, naming it, and deletes it.
@@ -35,7 +36,6 @@ export function DeleteConversationDialog({
   onOpenChange: (open: boolean) => void;
   open: boolean;
 }) {
-  const queryClient = useQueryClient();
   const deleteChannel = useMutation(deleteChannelMutationOptions(queryClient));
   const { reset } = deleteChannel;
 

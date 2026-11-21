@@ -1,13 +1,10 @@
 import { IconPin, IconPinnedOff, IconTrash } from "@tabler/icons-react";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { setChannelPinnedMutationOptions } from "@/lib/channels/mutations";
 import { channelListQueryOptions } from "@/lib/channels/queries";
+import { queryClient } from "@/query-client";
 import { DeleteConversationDialog } from "./delete-conversation-dialog";
 
 /**
@@ -30,7 +27,6 @@ export function ConversationActions({
   leave: () => Promise<unknown>;
   name: string;
 }) {
-  const queryClient = useQueryClient();
   const pinned = useInfiniteQuery({
     ...channelListQueryOptions(),
     select: (data) =>

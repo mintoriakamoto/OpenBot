@@ -1,10 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   issueCallbackTokenMutationOptions,
   revokeCallbackTokenMutationOptions,
 } from "@/lib/agents/mutations";
+import { queryClient } from "@/query-client";
 
 /**
  * The credential this coworker presents when it calls a tool back.
@@ -26,7 +27,6 @@ export function CallbackTokenPanel({
   agentId: string;
   hasToken: boolean;
 }) {
-  const queryClient = useQueryClient();
   const issue = useMutation(issueCallbackTokenMutationOptions(queryClient));
   const revoke = useMutation(revokeCallbackTokenMutationOptions(queryClient));
 

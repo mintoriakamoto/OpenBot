@@ -149,6 +149,13 @@ export type AccountModePreview = {
  * answers either way, so a preview is not a second endpoint to keep in step with the real switch —
  * it is the real switch, asked not to commit.
  */
+/** Kept out of the `plugins` family; see the dialog that reads it. */
+export const accountModeKeys = {
+  all: ["account-mode"] as const,
+  preview: (serverId: string, mode: "personal" | "shared") =>
+    ["account-mode", serverId, mode] as const,
+};
+
 export async function accountModePreview(
   serverId: string,
   mode: "personal" | "shared",

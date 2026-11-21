@@ -5,6 +5,7 @@ import {
   attachmentUrl,
   MAX_IMAGE_BYTES,
 } from "@/lib/channels/attachments";
+import { tryClient } from "@/lib/client";
 
 /**
  * Uploads a picked file to this deployment and hands the composer a link to it, never the bytes.
@@ -61,10 +62,9 @@ export function uploadToChannel(
      */
     formData.append("uploadGroup", uploadGroup);
 
-    const response = await fetch(`/api/channels/${channelId}/attachments`, {
+    const response = await tryClient(`/api/channels/${channelId}/attachments`, {
       method: "POST",
-      credentials: "include",
-      body: formData,
+      form: formData,
     });
 
     /*

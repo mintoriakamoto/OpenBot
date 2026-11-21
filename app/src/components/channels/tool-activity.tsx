@@ -5,6 +5,12 @@ import {
 } from "@openbot/shared/connect-prompt";
 import { researchRoleOfTool } from "@openbot/shared/research";
 import {
+  connectorName,
+  humanise,
+  ownToolLabel,
+  readToolName,
+} from "@openbot/shared/tool-name";
+import {
   IconFileText,
   IconFolder,
   IconPlug,
@@ -18,12 +24,6 @@ import { PendingApprovals } from "@/components/approvals/inline-approval";
 import { codingLook, foreignCodingCall } from "@/lib/copilot/coding-calls";
 import { markdownComponents, markdownPlugins } from "@/lib/markdown";
 import {
-  connectorName,
-  humanise,
-  ownToolLabel,
-  readToolName,
-} from "@openbot/shared/tool-name";
-import {
   asText,
   forDisplay,
   REFUSAL_MARKER,
@@ -31,8 +31,8 @@ import {
 } from "@/lib/plugins/tool-result";
 import { readTeamBotConsent } from "@/lib/team-bots";
 import { browserStepDetails, isBrowserStep } from "./browser-activity";
-import { codingOutcome, lookStep } from "./coding-tool-cards";
 import type { VisibleChatItem } from "./chat-messages";
+import { codingOutcome, lookStep } from "./coding-tool-cards";
 import { ToolLine } from "./tool-line";
 
 type ToolItem = Extract<VisibleChatItem, { kind: "tool" }>;

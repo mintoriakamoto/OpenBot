@@ -35,6 +35,7 @@ import {
   mediaTypeOf,
   shouldClaimPaste,
 } from "@/lib/channels/attachments";
+import { client } from "@/lib/client";
 import { newId } from "@/lib/new-id";
 import { cn } from "@/lib/utils";
 import { Button } from "../../ui/button";
@@ -1675,10 +1676,9 @@ export function Composer({
  * actionable. `cull-staged-attachments.ts` is the backstop for whatever this misses.
  */
 function discardStagedAttachment(attachmentId: string): void {
-  void fetch(attachmentUrl(attachmentId), {
-    method: "DELETE",
-    credentials: "include",
-  }).catch(() => undefined);
+  void client(attachmentUrl(attachmentId), { method: "DELETE" }).catch(
+    () => undefined,
+  );
 }
 
 /**

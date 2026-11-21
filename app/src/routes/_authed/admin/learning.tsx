@@ -3,7 +3,7 @@ import type {
   LearningSettings,
   LearningTarget,
 } from "@openbot/shared/learning";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useId, useState } from "react";
 import { PageSection, PageShell } from "@/components/layout/page-shell";
@@ -19,6 +19,7 @@ import {
   learningSettingsQueryOptions,
   saveLearningSettings,
 } from "@/lib/learning/queries";
+import { queryClient } from "@/query-client";
 
 export const Route = createFileRoute("/_authed/admin/learning")({
   component: LearningPage,
@@ -105,7 +106,6 @@ function ContainerSetup({
 }: {
   automatic: Extract<LearningAutoAssignState, { state: "absent" }>;
 }) {
-  const queryClient = useQueryClient();
   const create = useMutation({
     mutationFn: createLearningContainer,
     onSuccess: async (next) => {
@@ -147,7 +147,6 @@ function ContainerSetup({
 }
 
 export function LearningPage() {
-  const queryClient = useQueryClient();
   const settingsQuery = useQuery(learningSettingsQueryOptions());
   const automatic = useQuery(learningAutomaticQueryOptions());
   const agents = useQuery(agentListQueryOptions());
@@ -199,9 +198,6 @@ export function LearningPage() {
         title="Participation"
         description="Container changes apply to new conversations. Existing ones keep their first container. Containers must already exist in the same Intelligence project. Until you save here, OpenBot uses that project's openbot container."
       >
-        {settingsQuery.isPending && (
-          <p role="status">Loading Learning settings…</p>
-        )}
         {settingsQuery.error && (
           <p role="alert" className="text-destructive">
             {settingsQuery.error.message}

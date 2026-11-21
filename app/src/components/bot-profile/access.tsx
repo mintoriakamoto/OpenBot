@@ -1,3 +1,4 @@
+import { readToolName } from "@openbot/shared/tool-name";
 import {
   IconApps,
   IconBox,
@@ -48,7 +49,6 @@ import {
   type GrantedPlugins,
   pluginsPageQueryOptions,
 } from "@/lib/plugins/queries";
-import { readToolName } from "@openbot/shared/tool-name";
 import { queryClient } from "@/query-client";
 
 /**

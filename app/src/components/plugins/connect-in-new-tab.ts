@@ -1,7 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { connectAccountMutationOptions } from "@/lib/plugins/mutations";
 import { pluginKeys } from "@/lib/plugins/queries";
+import { queryClient } from "@/query-client";
 
 /**
  * Start this person's own connection to one app in a new tab, the way Settings starts it.
@@ -25,7 +26,6 @@ export function useConnectInNewTab() {
    * the module's own singleton; a screen mounted under another provider is refetched through its
    * own, so an account recorded on the press is drawn where the press was made.
    */
-  const queryClient = useQueryClient();
   const [waiting, setWaiting] = useState(false);
   /** This app takes a key somebody types, so there is no page to send them to. */
   const [needsKey, setNeedsKey] = useState(false);
@@ -70,7 +70,7 @@ export function useConnectInNewTab() {
       window.addEventListener("focus", finish, { once: true });
     }, 1_000);
     return () => clearInterval(timer);
-  }, [waiting, queryClient]);
+  }, [waiting]);
   // Goes with whoever drew the button, and with a wait that ended some other way first.
   useEffect(() => {
     if (waiting || !onReturn.current) return;

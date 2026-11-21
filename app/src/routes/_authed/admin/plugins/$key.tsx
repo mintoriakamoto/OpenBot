@@ -5,7 +5,7 @@ import {
   IconPuzzle,
   IconTool,
 } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import * as React from "react";
 import { useState } from "react";
@@ -75,6 +75,7 @@ import {
   botSharedAppsQueryOptions,
   describeApproval,
 } from "@/lib/plugins/shared-use";
+import { queryClient } from "@/query-client";
 
 /**
  * One vendor: what it needs from this deployment, and which Bots hold its tools.
@@ -213,7 +214,6 @@ function ConnectionStateUnreadable() {
 
 function RouteComponent() {
   const { key } = useParams({ from: "/_authed/admin/plugins/$key" });
-  const queryClient = useQueryClient();
   const plugins = useQuery(pluginsPageQueryOptions());
   const provider = pluginsProvider(plugins.data);
   /*

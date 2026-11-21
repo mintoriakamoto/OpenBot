@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageCard, PageShell } from "@/components/layout/page-shell";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,7 @@ import {
   type CredentialStatus,
   credentialListQueryOptions,
 } from "@/lib/credentials/queries";
+import { queryClient } from "@/query-client";
 
 export const Route = createFileRoute("/_authed/admin/credentials_/new")({
   component: NewCredentialPage,
@@ -51,7 +52,6 @@ const KIND_LABEL = { model: "Model", connector: "Connector" } as const;
  */
 function NewCredentialPage() {
   const navigate = Route.useNavigate();
-  const queryClient = useQueryClient();
   const credentials = useQuery(credentialListQueryOptions());
   const createCredential = useMutation(
     createCredentialMutationOptions(queryClient),

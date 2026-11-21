@@ -1,5 +1,5 @@
 import { IconBolt, IconPlugOff, IconTool } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import {
@@ -21,6 +21,7 @@ import { grantRoster } from "@/lib/agents/grant-roster";
 import { agentListQueryOptions } from "@/lib/agents/queries";
 import { setPluginGrantMutationOptions } from "@/lib/plugins/mutations";
 import { pluginsPageQueryOptions } from "@/lib/plugins/queries";
+import { queryClient } from "@/query-client";
 
 /**
  * One tool, and which Bots hold it.
@@ -42,7 +43,6 @@ function RouteComponent() {
   const { key, tool: toolName } = useParams({
     from: "/_authed/admin/plugins/$key_/tools/$tool",
   });
-  const queryClient = useQueryClient();
   const plugins = useQuery(pluginsPageQueryOptions());
   const { data: agents } = useQuery(agentListQueryOptions());
   /* The ones this person has hidden, so a grant one of them holds still has its switch here. */

@@ -1,5 +1,5 @@
 import { IconCheck, IconCode, IconShieldX } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { DryRunChanges } from "@/components/boundaries/dry-run-changes";
@@ -39,6 +39,7 @@ import {
   type DryRunReport,
   dryRunActionPolicy,
 } from "@/lib/computers/queries";
+import { queryClient } from "@/query-client";
 
 export const Route = createFileRoute("/_authed/admin/boundaries_/new")({
   component: NewRulePage,
@@ -57,7 +58,6 @@ const BACK = {
  */
 function NewRulePage() {
   const navigate = Route.useNavigate();
-  const queryClient = useQueryClient();
   const stored = useQuery(actionPolicyQueryOptions());
   const savePolicy = useMutation(saveActionPolicyMutationOptions(queryClient));
   const [chosen, setChosen] = useState<RuleTemplate | "custom" | null>(null);

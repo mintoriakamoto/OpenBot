@@ -1,7 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "@/components/ui/toast";
 import { signOutMutationOptions } from "@/lib/auth/mutations";
+import { queryClient } from "@/query-client";
 
 /** The one toast a sign-out that did not finish says itself in. */
 const SIGN_OUT_TOAST = "sign-out-unfinished";
@@ -12,7 +13,6 @@ const SIGN_OUT_TOAST = "sign-out-unfinished";
  * stays until they close it; Sign out works again at once.
  */
 export function useSignOut() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const signOut = useMutation(signOutMutationOptions(queryClient));
   return {

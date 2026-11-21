@@ -3,12 +3,13 @@ import {
   useCopilotKit,
   useFrontendTool as useSDKFrontendTool,
 } from "@copilotkit/react-core/v2";
-import { type QueryClient, useQueryClient } from "@tanstack/react-query";
+import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { InlineApproval } from "@/components/approvals/inline-approval";
-import { threadAsksEveryStepQueryOptions } from "@/lib/approvals";
+import { approvalKeys, threadAsksEveryStepQueryOptions } from "@/lib/approvals";
 import { tryClient } from "@/lib/client";
 import { failedComputerCall } from "@/lib/computers/call";
+import { queryClient } from "@/query-client";
 import { useActiveBotHolder } from "./active-bot";
 import { frontendApprovalSnapshot } from "./approval-context";
 
@@ -85,7 +86,6 @@ export function useFrontendTool<T extends Record<string, unknown>>(
 ) {
   const { copilotkit } = useCopilotKit();
   // Stable for the provider's life, so the SDK's once-registered handler may keep it.
-  const queryClient = useQueryClient();
   const bot = useActiveBotHolder();
   const render = tool.render;
   useSDKFrontendTool({
@@ -154,7 +154,7 @@ export function useFrontendTool<T extends Record<string, unknown>>(
             // resume: the decision executes the action once and continues this conversation.
             copilotkit.stopAgent({ agent: context.agent });
             // Draw the card now rather than on the inbox's next poll.
-            void queryClient.invalidateQueries({ queryKey: ["approvals"] });
+            void queryClient.invalidateQueries({ queryKey: approvalKeys.all });
             return { waiting: true };
           }
           // Answered, not thrown: a thrown handler ends the Bot's turn with nothing said (see

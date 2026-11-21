@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { ChannelItemContent } from "@/components/app-sidebar/channel-item-content";
 import { PageRows } from "@/components/layout/page-shell";
 import { Button } from "@/components/ui/button";
@@ -20,10 +20,10 @@ import {
   saveUserPreferencesMutationOptions,
   useUserPreferences,
 } from "@/lib/settings/message-list";
+import { queryClient } from "@/query-client";
 
 export function MessageListPreference() {
   const preferences = useUserPreferences();
-  const queryClient = useQueryClient();
   const save = useMutation(
     saveUserPreferencesMutationOptions(queryClient, preferences.userId),
   );
@@ -56,7 +56,7 @@ export function MessageListPreference() {
                   ? emphasis === "agent"
                     ? "Bot name"
                     : "Conversation title"
-                  : "Loading…"}
+                  : null}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>

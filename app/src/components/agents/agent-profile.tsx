@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import { AbstractAvatar } from "@/components/agents/abstract-avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import { agentQueryOptions } from "@/lib/agents/queries";
 
 function Tag({ children }: { children: ReactNode }) {
@@ -12,30 +11,6 @@ function Tag({ children }: { children: ReactNode }) {
     <span className="inline-flex items-center rounded-full border border-border bg-muted/40 px-2 py-0.5 text-xs text-muted-foreground">
       {children}
     </span>
-  );
-}
-
-function ProfileSkeleton() {
-  return (
-    <div className="flex w-full flex-col gap-6 p-8">
-      <header className="flex flex-col items-center gap-3">
-        <Skeleton className="size-20 shrink-0 rounded-full" />
-        <div className="flex w-full flex-col items-center gap-1.5">
-          <Skeleton className="h-7 w-44" />
-          <Skeleton className="h-4 w-28" />
-        </div>
-        <div className="flex gap-1.5">
-          <Skeleton className="h-5 w-16 rounded-full" />
-          <Skeleton className="h-5 w-24 rounded-full" />
-        </div>
-      </header>
-      <div className="grid gap-2">
-        <Skeleton className="h-3 w-10" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-2/3" />
-      </div>
-      <Skeleton className="h-9 w-full" />
-    </div>
   );
 }
 
@@ -60,7 +35,7 @@ export function AgentProfile({
   const agent = useQuery(agentQueryOptions(agentId));
 
   if (agent.isPending) {
-    return <ProfileSkeleton />;
+    return null;
   }
   if (agent.error || !agent.data) {
     return (

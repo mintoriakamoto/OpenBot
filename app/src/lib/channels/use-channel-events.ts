@@ -1,7 +1,8 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { groupKeys } from "@/lib/groups";
 import { socketUrl as buildSocketUrl } from "@/lib/socket-url";
+import { queryClient } from "@/query-client";
 import {
   type AgentChannel,
   type ChannelPage,
@@ -289,7 +290,6 @@ function socketUrl() {
 }
 
 export function useChannelEvents() {
-  const queryClient = useQueryClient();
   const router = useRouter();
 
   useEffect(() => {
@@ -326,7 +326,7 @@ export function useChannelEvents() {
         const activity = parsed;
         // A group conversation's shared transcript moves with the same events; refetch it if open.
         void queryClient.invalidateQueries({
-          queryKey: ["groups", activity.channelId],
+          queryKey: groupKeys.detail(activity.channelId),
         });
 
         /*
@@ -398,7 +398,7 @@ export function useChannelEvents() {
       if (socket) socket.onclose = null;
       socket?.close();
     };
-  }, [queryClient, router]);
+  }, [router]);
 }
 
 /**

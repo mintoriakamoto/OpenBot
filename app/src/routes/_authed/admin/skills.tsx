@@ -1,5 +1,5 @@
 import { IconFileText, IconPlus } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import * as React from "react";
 import { useState } from "react";
@@ -40,6 +40,7 @@ import {
   setPluginGrantMutationOptions,
 } from "@/lib/plugins/mutations";
 import { pluginsPageQueryOptions } from "@/lib/plugins/queries";
+import { queryClient } from "@/query-client";
 
 /**
  * The deployment's skills: named instructions a person invokes with `/` and a Bot follows.
@@ -57,7 +58,6 @@ export const Route = createFileRoute("/_authed/admin/skills")({
 const EMPTY_DRAFT = { slug: "", title: "", summary: "", instructions: "" };
 
 function RouteComponent() {
-  const queryClient = useQueryClient();
   const plugins = useQuery(pluginsPageQueryOptions());
   const { data: agents } = useQuery(agentListQueryOptions());
   const nameFor = useBotNames();

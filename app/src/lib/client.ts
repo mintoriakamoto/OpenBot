@@ -18,6 +18,11 @@ export type ClientOptions = {
   /** Serialised as JSON, which is also what sets the content type. */
   body?: unknown;
   /**
+   * A multipart upload. Sent as given: the browser sets the boundary and content type, so this
+   * option must not be combined with `body`.
+   */
+  form?: FormData;
+  /**
    * What a person reads when the server sent no message of its own.
    *
    * Name the entity in it — "Couldn't load your Bots." rather than "Request failed" — because this
@@ -30,14 +35,12 @@ export type ClientOptions = {
 
 /** Every request in this app is authenticated, and every one of them is JSON or nothing. */
 async function send(path: string, options: ClientOptions): Promise<Response> {
+  const json = options.body !== undefined;
   return fetch(path, {
     method: options.method,
     credentials: "include",
-    headers:
-      options.body === undefined
-        ? undefined
-        : { "content-type": "application/json" },
-    body: options.body === undefined ? undefined : JSON.stringify(options.body),
+    headers: json ? { "content-type": "application/json" } : undefined,
+    body: options.form ?? (json ? JSON.stringify(options.body) : undefined),
     ...(options.signal ? { signal: options.signal } : {}),
   });
 }

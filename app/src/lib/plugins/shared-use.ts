@@ -3,6 +3,7 @@ import {
   type QueryClient,
   queryOptions,
 } from "@tanstack/react-query";
+import { approvalKeys } from "@/lib/approvals";
 import { client } from "@/lib/client";
 
 export type SharedAudience = "owner" | "people" | "team";
@@ -86,7 +87,8 @@ export function decideSharedUseMutationOptions(queryClient: QueryClient) {
         `/api/approvals/shared-use/${encodeURIComponent(id)}/${decision}`,
         { method: "POST", fallback: "Couldn't save that decision." },
       ),
-    onSettled: () => queryClient.invalidateQueries({ queryKey: ["approvals"] }),
+    onSettled: () =>
+      queryClient.invalidateQueries({ queryKey: approvalKeys.all }),
   });
 }
 

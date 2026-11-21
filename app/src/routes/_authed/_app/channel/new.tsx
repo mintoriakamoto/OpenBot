@@ -1,5 +1,5 @@
 import type { Message } from "@ag-ui/core";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { NewBotSheet } from "@/components/agents/new-bot-sheet";
@@ -33,6 +33,7 @@ import {
 import { useStartChannel } from "@/lib/channels/start";
 import { useSkillCommands } from "@/lib/plugins/skill-commands";
 import { searchTextEntry } from "@/lib/search-text";
+import { queryClient } from "@/query-client";
 import { newId } from "../../../../lib/new-id";
 
 /**
@@ -56,7 +57,6 @@ export const Route = createFileRoute("/_authed/_app/channel/new")({
 
 function RouteComponent() {
   const { agent } = Route.useSearch();
-  const queryClient = useQueryClient();
   const [creatingBot, setCreatingBot] = useState(false);
   const [pickerOpen, setPickerOpen] = useState<boolean | undefined>(undefined);
   const navigate = Route.useNavigate();
