@@ -21,7 +21,10 @@ import { queryClient } from "@/query-client";
 
 beforeEach(() => {
   queryClient.clear();
-  queryClient.setDefaultOptions({ queries: { retry: false } });
+  queryClient.setDefaultOptions({
+    queries: { retry: false, staleTime: Number.POSITIVE_INFINITY },
+    mutations: { retry: false },
+  });
 });
 
 const originalFetch = globalThis.fetch;

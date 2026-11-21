@@ -32,7 +32,9 @@ import { settleReactWork } from "./settle-react-work";
 
 beforeEach(() => {
   queryClient.clear();
-  queryClient.setDefaultOptions({ queries: { retry: false } });
+  queryClient.setDefaultOptions({
+    queries: { retry: false, staleTime: Number.POSITIVE_INFINITY },
+  });
 });
 
 beforeAll(() => GlobalRegistrator.register());
@@ -104,6 +106,7 @@ function queryClientWithAgents(agents: AgentProfile[]) {
 }
 
 function queryClientWithFailingAgents() {
+  queryClient.setDefaultOptions({ queries: { retry: false } });
   queryClient.setQueryData(agentKeys.list(false), undefined);
   queryClient.setQueryDefaults(agentKeys.list(false), {
     queryFn: async () => {
