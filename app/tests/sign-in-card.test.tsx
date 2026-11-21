@@ -1,15 +1,28 @@
-import { afterAll, afterEach, beforeAll, expect, test } from "bun:test";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  expect,
+  test,
+} from "bun:test";
 import { CopilotKitProvider, useCopilotKit } from "@copilotkit/react-core/v2";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import {
   focusManager,
-  QueryClient,
+  type QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import type { ComponentType, ReactNode } from "react";
 import { SignInTool } from "@/lib/copilot/sign-in-tool";
+import { queryClient } from "@/query-client";
 import { settleReactWork } from "./settle-react-work";
+
+beforeEach(() => {
+  queryClient.clear();
+  queryClient.setDefaultOptions({ queries: { retry: false } });
+});
 
 /**
  * The open chat's sign-in card, drawn by the renderer the SDK actually keeps.
@@ -112,9 +125,7 @@ function Providers({
 
 test("the waiting card offers the private sign-in once the request exists", async () => {
   serving([]);
-  const queries = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
+  const queries = queryClient;
   const kept = new Registry();
   const tree = render(
     <Providers queries={queries}>

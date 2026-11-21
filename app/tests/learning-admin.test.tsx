@@ -1,7 +1,14 @@
-import { afterAll, afterEach, beforeAll, expect, test } from "bun:test";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  expect,
+  test,
+} from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import type { LearningSettings } from "@openbot/shared/learning";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import {
   createMemoryHistory,
   createRootRoute,
@@ -9,7 +16,13 @@ import {
   RouterProvider,
 } from "@tanstack/react-router";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
+import { queryClient } from "@/query-client";
 import { LearningPage } from "@/routes/_authed/admin/learning";
+
+beforeEach(() => {
+  queryClient.clear();
+  queryClient.setDefaultOptions({ queries: { retry: false } });
+});
 
 beforeAll(() => GlobalRegistrator.register());
 afterAll(() => GlobalRegistrator.unregister());
@@ -20,9 +33,6 @@ afterEach(() => {
 });
 
 function page() {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
-  });
   const rootRoute = createRootRoute({ component: LearningPage });
   const router = createRouter({
     routeTree: rootRoute,
